@@ -31,12 +31,15 @@
 
         [data-theme="dark"] {
             --bg-primary: #0f0f0f;
-            --bg-secondary: #1a1a1a;
-            --bg-tertiary: #262626;
+            --bg-secondary: rgba(26, 26, 26, 0.85);
+            --bg-tertiary: rgba(38, 38, 38, 0.85);
             --text-primary: #f5f5f5;
             --text-secondary: #a3a3a3;
             --border: #404040;
             --shadow: rgba(0, 0, 0, 0.5);
+            --accent: #ff00ff;
+            --accent-hover: #ff69b4;
+            --success: #00ff00;
         }
 
         body {
@@ -46,12 +49,92 @@
             line-height: 1.6;
             transition: background 0.3s, color 0.3s;
             padding-bottom: env(safe-area-inset-bottom);
+            position: relative;
+        }
+
+        [data-theme="dark"] body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                repeating-linear-gradient(45deg, 
+                    transparent, transparent 10px,
+                    rgba(255, 0, 255, 0.03) 10px, rgba(255, 0, 255, 0.03) 20px),
+                repeating-linear-gradient(-45deg,
+                    transparent, transparent 10px,
+                    rgba(0, 255, 255, 0.03) 10px, rgba(0, 255, 255, 0.03) 20px),
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 0, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, 
+                    #1a0a0a 0%, 
+                    #0a0a1a 25%, 
+                    #0a1a0a 50%, 
+                    #1a0a1a 75%, 
+                    #1a1a0a 100%);
+            background-size: 100% 100%;
+            opacity: 0.8;
+            animation: psychedelic 20s ease-in-out infinite;
+        }
+
+        @keyframes psychedelic {
+            0%, 100% { 
+                filter: hue-rotate(0deg) saturate(1.5);
+                opacity: 0.8;
+            }
+            25% { 
+                filter: hue-rotate(90deg) saturate(1.8);
+                opacity: 0.9;
+            }
+            50% { 
+                filter: hue-rotate(180deg) saturate(2);
+                opacity: 0.85;
+            }
+            75% { 
+                filter: hue-rotate(270deg) saturate(1.8);
+                opacity: 0.9;
+            }
+        }
+
+        [data-theme="dark"] body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.3) 2%, transparent 2%),
+                radial-gradient(circle at 80% 40%, rgba(160, 82, 45, 0.25) 3%, transparent 3%),
+                radial-gradient(circle at 40% 60%, rgba(139, 69, 19, 0.35) 2.5%, transparent 2.5%),
+                radial-gradient(circle at 60% 80%, rgba(160, 82, 45, 0.3) 2%, transparent 2%),
+                radial-gradient(circle at 10% 70%, rgba(139, 69, 19, 0.25) 3%, transparent 3%),
+                radial-gradient(circle at 90% 20%, rgba(160, 82, 45, 0.3) 2.5%, transparent 2.5%),
+                radial-gradient(circle at 30% 90%, rgba(139, 69, 19, 0.35) 2%, transparent 2%),
+                radial-gradient(circle at 70% 10%, rgba(160, 82, 45, 0.25) 3%, transparent 3%),
+                radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.3) 2.5%, transparent 2.5%),
+                radial-gradient(circle at 15% 45%, rgba(160, 82, 45, 0.35) 2%, transparent 2%);
+            background-size: 50px 50px, 70px 70px, 60px 60px, 55px 55px, 65px 65px,
+                           60px 60px, 70px 70px, 55px 55px, 50px 50px, 65px 65px;
+            background-position: 0 0, 25px 25px, 15px 40px, 35px 10px, 5px 55px,
+                               45px 30px, 10px 65px, 40px 45px, 20px 20px, 30px 50px;
+            mix-blend-mode: overlay;
+            opacity: 0.4;
         }
 
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 1rem;
+            position: relative;
+            z-index: 10;
         }
 
         header {
@@ -66,6 +149,22 @@
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--accent);
+        }
+
+        [data-theme="dark"] h1 {
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s ease infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.5));
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .theme-toggle {
@@ -98,6 +197,26 @@
             padding: 1.25rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .stat-card {
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.1), 
+                        0 0 40px rgba(0, 255, 255, 0.05);
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.1), 
+                           0 0 40px rgba(0, 255, 255, 0.05);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(255, 0, 255, 0.2), 
+                           0 0 60px rgba(0, 255, 255, 0.1);
+            }
+        }
         }
 
         .stat-label {
@@ -201,6 +320,29 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 48px;
+        }
+
+        [data-theme="dark"] button, [data-theme="dark"] .btn {
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4),
+                        0 0 40px rgba(0, 255, 255, 0.2);
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.4),
+                           0 0 40px rgba(0, 255, 255, 0.2);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(255, 0, 255, 0.6),
+                           0 0 60px rgba(0, 255, 255, 0.3);
+            }
+        }
+
+        [data-theme="dark"] button:hover, [data-theme="dark"] .btn:hover {
+            background: linear-gradient(135deg, #ff69b4, #00ffff);
+            transform: scale(1.02);
             touch-action: manipulation;
         }
 
@@ -309,6 +451,54 @@
             object-fit: cover;
             background: var(--bg-tertiary);
             flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .tip-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .photo-modal.active {
+            display: flex;
+        }
+
+        .photo-modal img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .photo-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .tip-details {
@@ -928,7 +1118,7 @@
                 
                 return `
                     <div class="tip-item">
-                        ${tip.photo ? `<img src="${tip.photo}" class="tip-photo" alt="Receipt">` : '<div class="tip-photo"></div>'}
+                        ${tip.photo ? `<img src="${tip.photo}" class="tip-photo" alt="Receipt" onclick="viewPhoto('${tip.photo}')">` : '<div class="tip-photo"></div>'}
                         <div class="tip-details">
                             <div class="tip-amount">$${tip.amount.toFixed(2)}</div>
                             <div class="tip-meta">${shiftEmoji} ${tip.shift} • ${dateStr}</div>
@@ -989,6 +1179,30 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
+        // Photo modal
+        function viewPhoto(photoSrc) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = photoSrc;
+            modal.classList.add('active');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        // Close modal on click outside image
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'photoModal') {
+                closePhotoModal();
+            }
+        });
     </script>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="photo-modal" onclick="if(event.target === this) closePhotoModal()">
+        <button class="photo-modal-close" onclick="closePhotoModal()">×</button>
+        <img id="modalImg" src="" alt="Receipt">
+    </div>
 </body>
 </html>
