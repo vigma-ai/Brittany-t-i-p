@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tip Tracker</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiVGlwIFRyYWNrZXIiLCJzaG9ydF9uYW1lIjoiVGlwcyIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjNjM2NmYxIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NyZWN0IGZpbGw9JyUyMzYzNjZmMScgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnLyUzRSUzQ3RleHQgeD0nNTAnIHk9JzY1JyBmb250LXNpemU9JzYwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyUzRSUyNDwvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border: #dee2e6;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #262626;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a3a3a3;
+            --border: #404040;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        canvas {
+            max-height: 200px;
+        }
+
+        .add-tip-section {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .camera-preview {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .camera-preview img,
+        .camera-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .ocr-result {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 2px dashed var(--border);
+            text-align: center;
+        }
+
+        .ocr-result.success {
+            border-color: var(--success);
+        }
+
+        .ocr-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 0.5rem 0;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        button, .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+        }
+
+        button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        button.secondary:hover {
+            background: var(--border);
+        }
+
+        button.danger {
+            background: var(--danger);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 48px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .shift-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .shift-btn {
+            padding: 0.875rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shift-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tips-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .tip-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tip-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--bg-tertiary);
+            flex-shrink: 0;
+        }
+
+        .tip-details {
+            flex: 1;
+        }
+
+        .tip-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .tip-meta {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .tip-notes {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .tip-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .tip-actions button {
+            padding: 0.5rem;
+            min-height: auto;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            padding: 0.875rem 1.5rem;
+            background: none;
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            cursor: pointer;
+            font-weight: 600;
+            min-height: auto;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .success-message {
+            background: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Tip Tracker</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="dashboard">Dashboard</button>
+            <button class="tab" data-tab="add">Add Tip</button>
+            <button class="tab" data-tab="history">History</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Today</div>
+                    <div class="stat-value" id="todayTotal">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="weekTotal">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Month</div>
+                    <div class="stat-value" id="monthTotal">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Daily Average</div>
+                    <div class="stat-value" id="dailyAvg">$0.00</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="section-title">Last 7 Days</div>
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <button onclick="exportCSV()" class="btn">📥 Export to CSV</button>
+        </div>
+
+        <!-- Add Tip Tab -->
+        <div class="tab-content" id="add">
+            <div class="add-tip-section">
+                <div class="section-title">Add New Tip</div>
+
+                <div class="camera-preview" id="preview">
+                    <div class="placeholder-icon">📸</div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="takePhoto()">📷 Take Photo</button>
+                    <button class="secondary" onclick="document.getElementById('fileInput').click()">🖼️ Upload Photo</button>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
+
+                <div id="ocrResult" class="ocr-result hidden">
+                    <div>Detected Amount:</div>
+                    <div class="ocr-amount" id="detectedAmount">$0.00</div>
+                    <small>Adjust below if needed</small>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div>Reading receipt...</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipAmount">Tip Amount ($)</label>
+                    <input type="number" id="tipAmount" step="0.01" min="0" placeholder="0.00" inputmode="decimal">
+                </div>
+
+                <div class="form-group">
+                    <label>Shift</label>
+                    <div class="shift-selector">
+                        <button class="shift-btn" data-shift="lunch" onclick="selectShift('lunch')">☀️ Lunch</button>
+                        <button class="shift-btn" data-shift="dinner" onclick="selectShift('dinner')">🌙 Dinner</button>
+                        <button class="shift-btn" data-shift="double" onclick="selectShift('double')">⚡ Double</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes (optional)</label>
+                    <textarea id="notes" placeholder="Any additional details..."></textarea>
+                </div>
+
+                <button onclick="saveTip()" id="saveTipBtn">💾 Save Tip</button>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="history">
+            <div class="tips-list" id="tipsList"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
+    <script>
+        // State
+        let currentPhoto = null;
+        let currentShift = null;
+        let videoStream = null;
+        let chart = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadStats();
+            loadHistory();
+            initChart();
+            setupTabs();
+        });
+
+        // Theme
+        function loadTheme() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+            if (chart) {
+                chart.options.scales.y.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
+                chart.options.scales.x.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
+                chart.update();
+            }
+        });
+
+        // Tabs
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-tab');
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(target).classList.add('active');
+                    
+                    if (target === 'dashboard') {
+                        loadStats();
+                        updateChart();
+                    } else if (target === 'history') {
+                        loadHistory();
+                    }
+                });
+            });
+        }
+
+        // Camera
+        async function takePhoto() {
+            const preview = document.getElementById('preview');
+            
+            try {
+                if (videoStream) {
+                    // Capture from video
+                    const video = preview.querySelector('video');
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    
+                    canvas.toBlob(blob => {
+                        handlePhotoCapture(blob);
+                    }, 'image/jpeg', 0.9);
+                    
+                    stopCamera();
+                } else {
+                    // Start camera
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { facingMode: 'environment' } 
+                    });
+                    videoStream = stream;
+                    
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.autoplay = true;
+                    video.playsInline = true;
+                    
+                    preview.innerHTML = '';
+                    preview.appendChild(video);
+                    
+                    document.querySelector('button[onclick="takePhoto()"]').textContent = '✅ Capture';
+                }
+            } catch (err) {
+                alert('Camera access denied. Please use "Upload Photo" instead.');
+                console.error(err);
+            }
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+                videoStream = null;
+                document.querySelector('button[onclick="takePhoto()"]').textContent = '📷 Take Photo';
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handlePhotoCapture(file);
+            }
+        }
+
+        function handlePhotoCapture(blob) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentPhoto = e.target.result;
+                
+                const preview = document.getElementById('preview');
+                preview.innerHTML = `<img src="${currentPhoto}" alt="Receipt">`;
+                
+                processOCR(currentPhoto);
+            };
+            reader.readAsDataURL(blob);
+        }
+
+        // OCR
+        async function processOCR(imageData) {
+            const loading = document.getElementById('loading');
+            const ocrResult = document.getElementById('ocrResult');
+            
+            loading.classList.add('active');
+            ocrResult.classList.add('hidden');
+            
+            try {
+                const worker = await Tesseract.createWorker();
+                await worker.loadLanguage('eng');
+                await worker.initialize('eng');
+                
+                const { data: { text } } = await worker.recognize(imageData);
+                await worker.terminate();
+                
+                // Extract dollar amounts
+                const amounts = text.match(/\$?\d+\.?\d{0,2}/g);
+                
+                if (amounts && amounts.length > 0) {
+                    // Find the most likely tip amount (usually the largest or last amount)
+                    const numbers = amounts.map(a => parseFloat(a.replace('$', '')));
+                    const tipAmount = Math.max(...numbers);
+                    
+                    document.getElementById('detectedAmount').textContent = `$${tipAmount.toFixed(2)}`;
+                    document.getElementById('tipAmount').value = tipAmount.toFixed(2);
+                    ocrResult.classList.remove('hidden');
+                    ocrResult.classList.add('success');
+                } else {
+                    ocrResult.classList.remove('hidden', 'success');
+                    document.getElementById('detectedAmount').textContent = 'No amount found';
+                }
+            } catch (err) {
+                console.error('OCR Error:', err);
+                alert('Could not read receipt. Please enter the amount manually.');
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        // Shift selection
+        function selectShift(shift) {
+            currentShift = shift;
+            document.querySelectorAll('.shift-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-shift="${shift}"]`).classList.add('active');
+        }
+
+        // Save tip
+        function saveTip() {
+            const amount = parseFloat(document.getElementById('tipAmount').value);
+            const notes = document.getElementById('notes').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid tip amount');
+                return;
+            }
+            
+            if (!currentShift) {
+                alert('Please select a shift');
+                return;
+            }
+            
+            const tip = {
+                id: Date.now(),
+                amount: amount,
+                shift: currentShift,
+                date: new Date().toISOString(),
+                photo: currentPhoto,
+                notes: notes
+            };
+            
+            // Save to localStorage
+            const tips = getTips();
+            tips.unshift(tip);
+            localStorage.setItem('tips', JSON.stringify(tips));
+            
+            // Show success and reset
+            showSuccess();
+            resetForm();
+            loadStats();
+            updateChart();
+        }
+
+        function showSuccess() {
+            const msg = document.createElement('div');
+            msg.className = 'success-message';
+            msg.textContent = '✅ Tip saved successfully!';
+            document.querySelector('#add .add-tip-section').insertBefore(msg, document.querySelector('#add .add-tip-section').firstChild);
+            
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        function resetForm() {
+            document.getElementById('tipAmount').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('preview').innerHTML = '<div class="placeholder-icon">📸</div>';
+            document.getElementById('ocrResult').classList.add('hidden');
+            document.querySelectorAll('.shift-btn').forEach(btn => btn.classList.remove('active'));
+            currentPhoto = null;
+            currentShift = null;
+            stopCamera();
+        }
+
+        // Data management
+        function getTips() {
+            return JSON.parse(localStorage.getItem('tips') || '[]');
+        }
+
+        function loadStats() {
+            const tips = getTips();
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            const todayTips = tips.filter(t => new Date(t.date) >= today);
+            const weekTips = tips.filter(t => new Date(t.date) >= weekAgo);
+            const monthTips = tips.filter(t => new Date(t.date) >= monthStart);
+            
+            const todayTotal = todayTips.reduce((sum, t) => sum + t.amount, 0);
+            const weekTotal = weekTips.reduce((sum, t) => sum + t.amount, 0);
+            const monthTotal = monthTips.reduce((sum, t) => sum + t.amount, 0);
+            
+            // Daily average (last 30 days)
+            const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const last30Tips = tips.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            const uniqueDays = new Set(last30Tips.map(t => new Date(t.date).toDateString())).size;
+            const dailyAvg = uniqueDays > 0 ? last30Tips.reduce((sum, t) => sum + t.amount, 0) / uniqueDays : 0;
+            
+            document.getElementById('todayTotal').textContent = `$${todayTotal.toFixed(2)}`;
+            document.getElementById('weekTotal').textContent = `$${weekTotal.toFixed(2)}`;
+            document.getElementById('monthTotal').textContent = `$${monthTotal.toFixed(2)}`;
+            document.getElementById('dailyAvg').textContent = `$${dailyAvg.toFixed(2)}`;
+        }
+
+        // Chart
+        function initChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Daily Tips',
+                        data: [],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!chart) return;
+            
+            const tips = getTips();
+            const last7Days = [];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                date.setHours(0, 0, 0, 0);
+                last7Days.push(date);
+            }
+            
+            const dailyTotals = last7Days.map(day => {
+                const dayTips = tips.filter(t => {
+                    const tipDate = new Date(t.date);
+                    return tipDate.toDateString() === day.toDateString();
+                });
+                return dayTips.reduce((sum, t) => sum + t.amount, 0);
+            });
+            
+            const labels = last7Days.map(day => {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                return days[day.getDay()];
+            });
+            
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = dailyTotals;
+            chart.update();
+        }
+
+        // History
+        function loadHistory() {
+            const tips = getTips();
+            const listEl = document.getElementById('tipsList');
+            
+            if (tips.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No tips recorded yet</p>
+                        <p style="margin-top: 0.5rem;"><small>Add your first tip to get started!</small></p>
+                    </div>
+                `;
+                return;
+            }
+            
+            listEl.innerHTML = tips.map(tip => {
+                const date = new Date(tip.date);
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+                
+                const shiftEmoji = {
+                    lunch: '☀️',
+                    dinner: '🌙',
+                    double: '⚡'
+                }[tip.shift] || '';
+                
+                return `
+                    <div class="tip-item">
+                        ${tip.photo ? `<img src="${tip.photo}" class="tip-photo" alt="Receipt">` : '<div class="tip-photo"></div>'}
+                        <div class="tip-details">
+                            <div class="tip-amount">$${tip.amount.toFixed(2)}</div>
+                            <div class="tip-meta">${shiftEmoji} ${tip.shift} • ${dateStr}</div>
+                            ${tip.notes ? `<div class="tip-notes">${tip.notes}</div>` : ''}
+                        </div>
+                        <div class="tip-actions">
+                            <button class="secondary" onclick="deleteTip(${tip.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteTip(id) {
+            if (!confirm('Delete this tip?')) return;
+            
+            const tips = getTips();
+            const filtered = tips.filter(t => t.id !== id);
+            localStorage.setItem('tips', JSON.stringify(filtered));
+            
+            loadHistory();
+            loadStats();
+            updateChart();
+        }
+
+        // Export
+        function exportCSV() {
+            const tips = getTips();
+            
+            if (tips.length === 0) {
+                alert('No tips to export');
+                return;
+            }
+            
+            const headers = ['Date', 'Time', 'Shift', 'Amount', 'Notes'];
+            const rows = tips.map(tip => {
+                const date = new Date(tip.date);
+                return [
+                    date.toLocaleDateString(),
+                    date.toLocaleTimeString(),
+                    tip.shift,
+                    tip.amount.toFixed(2),
+                    (tip.notes || '').replace(/,/g, ';')
+                ];
+            });
+            
+            const csv = [headers, ...rows]
+                .map(row => row.map(cell => `"${cell}"`).join(','))
+                .join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tips-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
