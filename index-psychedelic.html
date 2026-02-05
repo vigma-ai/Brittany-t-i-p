@@ -59,8 +59,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
             background: 
                 repeating-linear-gradient(45deg, 
                     transparent, transparent 10px,
@@ -108,8 +107,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
             background-image: 
                 radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.3) 2%, transparent 2%),
                 radial-gradient(circle at 80% 40%, rgba(160, 82, 45, 0.25) 3%, transparent 3%),
@@ -134,7 +132,7 @@
             margin: 0 auto;
             padding: 1rem;
             position: relative;
-            z-index: 10;
+            z-index: 1;
         }
 
         header {
@@ -642,7 +640,6 @@
     <div class="container">
         <header>
             <h1>💰 Tip Tracker</h1>
-            <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0.25rem 0 0 0; font-style: italic;">"The universe rewards those who show up" ✨</p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
         </header>
 
@@ -684,20 +681,14 @@
         <!-- Add Tip Tab -->
         <div class="tab-content" id="add">
             <div class="add-tip-section">
-                <div class="section-title">Log Tonight's Tips</div>
-                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
-                    📝 Take a photo of your handwritten tip total from tonight
-                </p>
-                <p style="color: var(--accent); font-size: 0.85rem; font-style: italic; margin-bottom: 1rem;">
-                    "Energy flows where attention goes. Track your abundance!" ✨
-                </p>
+                <div class="section-title">Add New Tip</div>
 
                 <div class="camera-preview" id="preview">
                     <div class="placeholder-icon">📸</div>
                 </div>
 
                 <div class="btn-group">
-                    <button onclick="takePhoto()">📷 Take Photo of Tip Sheet</button>
+                    <button onclick="takePhoto()">📷 Take Photo</button>
                     <button class="secondary" onclick="document.getElementById('fileInput').click()">🖼️ Upload Photo</button>
                 </div>
                 <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
@@ -705,21 +696,16 @@
                 <div id="ocrResult" class="ocr-result hidden">
                     <div>Detected Amount:</div>
                     <div class="ocr-amount" id="detectedAmount">$0.00</div>
-                    <small>✅ Auto-saving in 2 seconds...</small>
+                    <small>Adjust below if needed</small>
                 </div>
 
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <div>Reading your tip sheet...</div>
+                    <div>Reading receipt...</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="tipDate">Date</label>
-                    <input type="date" id="tipDate">
-                </div>
-
-                <div class="form-group">
-                    <label for="tipAmount">Total Credit Card Tips ($)</label>
+                    <label for="tipAmount">Tip Amount ($)</label>
                     <input type="number" id="tipAmount" step="0.01" min="0" placeholder="0.00" inputmode="decimal">
                 </div>
 
@@ -734,10 +720,10 @@
 
                 <div class="form-group">
                     <label for="notes">Notes (optional)</label>
-                    <textarea id="notes" placeholder="Busy night, good tables, etc..."></textarea>
+                    <textarea id="notes" placeholder="Any additional details..."></textarea>
                 </div>
 
-                <button onclick="saveTip()" id="saveTipBtn">💾 Save Tonight's Tips</button>
+                <button onclick="saveTip()" id="saveTipBtn">💾 Save Tip</button>
             </div>
         </div>
 
@@ -756,18 +742,6 @@
         let videoStream = null;
         let chart = null;
 
-        // Motivational quotes
-        const spiritualQuotes = [
-            "The universe rewards those who show up ✨",
-            "Your energy attracts your wealth 🌟",
-            "Gratitude turns what we have into enough 🙏",
-            "Every dollar is a blessing in disguise 💫",
-            "Abundance flows to those who believe 🌊",
-            "Your hustle is your prayer 🔥",
-            "Trust the timing of your life ⏰",
-            "What you seek is seeking you 🦋"
-        ];
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadTheme();
@@ -775,21 +749,7 @@
             loadHistory();
             initChart();
             setupTabs();
-            setDailyQuote();
-            
-            // Set today's date by default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tipDate').value = today;
         });
-
-        function setDailyQuote() {
-            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-            const quoteIndex = dayOfYear % spiritualQuotes.length;
-            const quoteEl = document.querySelector('header p');
-            if (quoteEl) {
-                quoteEl.textContent = spiritualQuotes[quoteIndex];
-            }
-        }
 
         // Theme
         function loadTheme() {
@@ -895,45 +855,9 @@
                 const preview = document.getElementById('preview');
                 preview.innerHTML = `<img src="${currentPhoto}" alt="Receipt">`;
                 
-                // Preprocess image for better OCR
-                preprocessImage(currentPhoto).then(processedImage => {
-                    processOCR(processedImage);
-                });
+                processOCR(currentPhoto);
             };
             reader.readAsDataURL(blob);
-        }
-
-        // Preprocess image for better OCR (increase contrast, sharpen)
-        async function preprocessImage(imageData) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    
-                    // Draw original image
-                    ctx.drawImage(img, 0, 0);
-                    
-                    // Get image data
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const data = imageData.data;
-                    
-                    // Increase contrast and convert to grayscale
-                    for (let i = 0; i < data.length; i += 4) {
-                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-                        // High contrast threshold
-                        const enhanced = gray > 128 ? 255 : 0;
-                        data[i] = data[i + 1] = data[i + 2] = enhanced;
-                    }
-                    
-                    ctx.putImageData(imageData, 0, 0);
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.src = imageData;
-            });
         }
 
         // OCR
@@ -949,87 +873,24 @@
                 await worker.loadLanguage('eng');
                 await worker.initialize('eng');
                 
-                // Configure for handwritten text and numbers
-                await worker.setParameters({
-                    tessedit_char_whitelist: '0123456789./$', // Focus on numbers and currency
-                    tessedit_pageseg_mode: Tesseract.PSM.AUTO, // Auto page segmentation
-                });
-                
-                const { data: { text, lines } } = await worker.recognize(imageData);
+                const { data: { text } } = await worker.recognize(imageData);
                 await worker.terminate();
                 
-                console.log('OCR Text:', text); // Debug log
-                console.log('OCR Lines:', lines); // Debug lines
+                // Extract dollar amounts
+                const amounts = text.match(/\$?\d+\.?\d{0,2}/g);
                 
-                // Extract date if present (format: 1/29, 01/29, etc.)
-                const dateMatch = text.match(/(\d{1,2})[\s\/](\d{1,2})/);
-                if (dateMatch) {
-                    const month = parseInt(dateMatch[1]);
-                    const day = parseInt(dateMatch[2]);
-                    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
-                        const year = new Date().getFullYear();
-                        const detectedDate = new Date(year, month - 1, day);
-                        document.getElementById('tipDate').value = detectedDate.toISOString().split('T')[0];
-                        console.log('Detected date:', detectedDate);
-                    }
-                }
-                
-                // Look for tip-specific patterns
-                const tipPatterns = [
-                    /tip[:\s]*\$?(\d+\.?\d{0,2})/i,
-                    /gratuity[:\s]*\$?(\d+\.?\d{0,2})/i,
-                    /tips?[:\s]*\$?(\d+\.?\d{0,2})/i
-                ];
-                
-                let tipAmount = null;
-                
-                // Try to find explicit "tip" or "gratuity" line
-                for (const pattern of tipPatterns) {
-                    const match = text.match(pattern);
-                    if (match && match[1]) {
-                        tipAmount = parseFloat(match[1]);
-                        break;
-                    }
-                }
-                
-                // Fallback: extract all numbers (more aggressive for handwriting)
-                if (!tipAmount) {
-                    // Match any sequence of digits (possibly separated by spaces)
-                    const allMatches = text.match(/[\d\s]+/g);
+                if (amounts && amounts.length > 0) {
+                    // Find the most likely tip amount (usually the largest or last amount)
+                    const numbers = amounts.map(a => parseFloat(a.replace('$', '')));
+                    const tipAmount = Math.max(...numbers);
                     
-                    if (allMatches) {
-                        const numbers = allMatches
-                            .map(m => m.replace(/\s/g, '')) // Remove spaces
-                            .filter(m => m.length > 0)
-                            .map(m => parseFloat(m))
-                            .filter(n => !isNaN(n) && n > 0 && n < 10000); // More lenient range
-                        
-                        console.log('Detected numbers:', numbers);
-                        
-                        if (numbers.length > 0) {
-                            // For handwritten logs: look for the amount column (usually largest number if just tip amount)
-                            // Or use the first substantial number found
-                            const likelyTip = numbers.find(n => n >= 5 && n <= 500) || numbers[0];
-                            tipAmount = likelyTip;
-                        }
-                    }
-                }
-                
-                if (tipAmount && tipAmount > 0) {
                     document.getElementById('detectedAmount').textContent = `$${tipAmount.toFixed(2)}`;
                     document.getElementById('tipAmount').value = tipAmount.toFixed(2);
                     ocrResult.classList.remove('hidden');
                     ocrResult.classList.add('success');
-                    
-                    // Auto-save after 2 seconds if amount detected
-                    setTimeout(() => {
-                        if (document.getElementById('tipAmount').value === tipAmount.toFixed(2)) {
-                            saveTip();
-                        }
-                    }, 2000);
                 } else {
                     ocrResult.classList.remove('hidden', 'success');
-                    document.getElementById('detectedAmount').textContent = 'No amount found - please enter manually';
+                    document.getElementById('detectedAmount').textContent = 'No amount found';
                 }
             } catch (err) {
                 console.error('OCR Error:', err);

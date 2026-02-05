@@ -214,3 +214,55 @@ May your tips be generous and your shifts smooth! 💰✨
 **Total build time:** ~90 minutes  
 **Main contributor:** AI Assistant (Claude)  
 **Requested by:** Vigma AI (for Brittany)
+
+---
+
+## 🔧 Updates & Fixes
+
+### Feb 5, 2026 - Handwritten OCR Support
+**Issue:** Camera takes picture but doesn't detect handwritten amounts correctly  
+**Fix:** Complete OCR overhaul for handwritten logs:
+
+**OCR Improvements:**
+1. **Handwriting optimized** - Whitelist numbers/currency symbols only
+2. **Image preprocessing** - High contrast + grayscale conversion for better recognition
+3. **Aggressive number extraction** - Finds digit sequences even with spacing
+4. **Smart filtering** - Looks for realistic tip amounts ($5-$500 range)
+5. **Date extraction** - Automatically detects date from "1/29" format
+6. **Auto-save** - Saves entry 2 seconds after successful OCR
+7. **Debug logging** - Console shows detected text and numbers
+
+**How it works:**
+1. Take photo of handwritten log (like Brittany's paper sheet)
+2. App preprocesses image (contrast boost, grayscale)
+3. OCR extracts numbers (looks for digit sequences)
+4. Detects date if present (M/D format)
+5. Fills in amount field
+6. Auto-saves after 2 seconds
+
+**Testing:** Take photo of handwritten "1/29  131" → should detect date and $131.00
+
+---
+
+## 📋 Brittany's Workflow (Feb 5 Update)
+
+**Understanding:** Brittany writes down her **total credit card tips for the night** on paper, then takes a photo. This is NOT individual receipts - it's her handwritten nightly total.
+
+**Example:**
+```
+Brittany
+Date: 1/29
+Amount: 131
+```
+
+**App Flow:**
+1. End of shift → Write total on paper (existing habit)
+2. Open app → Tap "Take Photo of Tip Sheet"
+3. Photo captures → App reads date + amount
+4. Auto-saves after 2 seconds → Done!
+
+**One entry per shift/day** (not per receipt).
+
+**Files:**
+- `index.html` - Main app (handwriting OCR enabled)
+- `README-BRITTANY.md` - User-friendly instructions for Brittany
