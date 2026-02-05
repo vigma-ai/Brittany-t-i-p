@@ -887,13 +887,32 @@
                 const { data: { text } } = await worker.recognize(imageData);
                 await worker.terminate();
                 
-                // Extract dollar amounts
-                const amounts = text.match(/\$?\d+\.?\d{0,2}/g);
+                console.log('OCR Text:', text);
                 
-                if (amounts && amounts.length > 0) {
-                    // Find the most likely tip amount (usually the largest or last amount)
-                    const numbers = amounts.map(a => parseFloat(a.replace('$', '')));
-                    const tipAmount = Math.max(...numbers);
+                // Extract 3-digit numbers that look like tip amounts (avoid combining digits)
+                // Look for standalone numbers between $10-$500 (typical tip range)
+                const lines = text.split('\n');
+                const validAmounts = [];
+                
+                for (const line of lines) {
+                    // Match whole numbers that are 2-3 digits
+                    const matches = line.match(/\b(\d{2,3})\b/g);
+                    if (matches) {
+                        for (const match of matches) {
+                            const num = parseInt(match);
+                            // Realistic tip range: $10 - $500
+                            if (num >= 10 && num <= 500) {
+                                validAmounts.push(num);
+                            }
+                        }
+                    }
+                }
+                
+                console.log('Valid amounts found:', validAmounts);
+                
+                if (validAmounts.length > 0) {
+                    // Use the most recent/largest reasonable amount
+                    const tipAmount = validAmounts[validAmounts.length - 1];
                     
                     document.getElementById('detectedAmount').textContent = `$${tipAmount.toFixed(2)}`;
                     document.getElementById('tipAmount').value = tipAmount.toFixed(2);
@@ -901,7 +920,7 @@
                     ocrResult.classList.add('success');
                 } else {
                     ocrResult.classList.remove('hidden', 'success');
-                    document.getElementById('detectedAmount').textContent = 'No amount found';
+                    document.getElementById('detectedAmount').textContent = 'No amount found - please enter manually';
                 }
             } catch (err) {
                 console.error('OCR Error:', err);
