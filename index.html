@@ -59,8 +59,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
             background: 
                 repeating-linear-gradient(45deg, 
                     transparent, transparent 10px,
@@ -108,8 +107,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -1;
             background-image: 
                 radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.3) 2%, transparent 2%),
                 radial-gradient(circle at 80% 40%, rgba(160, 82, 45, 0.25) 3%, transparent 3%),
@@ -134,7 +132,7 @@
             margin: 0 auto;
             padding: 1rem;
             position: relative;
-            z-index: 10;
+            z-index: 1;
         }
 
         header {
@@ -641,7 +639,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>💰 Tip Tracker</h1>
+            <h1>💀🌹 Tip Tracker 🌹💀</h1>
             <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0.25rem 0 0 0; font-style: italic;">"The universe rewards those who show up" ✨</p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
         </header>
@@ -678,36 +676,23 @@
                 <canvas id="trendChart"></canvas>
             </div>
 
-            <div class="stat-card" style="margin-top: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                <div class="stat-label" style="color: rgba(255,255,255,0.9);">🎯 Your Manifestation</div>
-                <div id="manifestation" style="font-size: 1.2rem; margin-top: 0.5rem; font-weight: 600;">Keep showing up, magic is happening! ✨</div>
-            </div>
-
-            <div class="milestones" id="milestones" style="margin-top: 1.5rem;">
-                <div class="section-title">🏆 Milestones Unlocked</div>
-                <div id="milestonesList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
-            </div>
-
             <button onclick="exportCSV()" class="btn">📥 Export to CSV</button>
         </div>
 
         <!-- Add Tip Tab -->
         <div class="tab-content" id="add">
             <div class="add-tip-section">
-                <div class="section-title">Log Tonight's Tips</div>
+                <div class="section-title">💀 Log Tonight's Energy 🌹</div>
                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
-                    📝 Take a photo of your handwritten tip total from tonight
-                </p>
-                <p style="color: var(--accent); font-size: 0.85rem; font-style: italic; margin-bottom: 1rem;">
-                    "Energy flows where attention goes. Track your abundance!" ✨
+                    📝 Capture your abundance ✨
                 </p>
 
                 <div class="camera-preview" id="preview">
-                    <div class="placeholder-icon">📸</div>
+                    <div class="placeholder-icon">📸🌹</div>
                 </div>
 
                 <div class="btn-group">
-                    <button onclick="takePhoto()">📷 Take Photo of Tip Sheet</button>
+                    <button onclick="takePhoto()">📷 Take Photo</button>
                     <button class="secondary" onclick="document.getElementById('fileInput').click()">🖼️ Upload Photo</button>
                 </div>
                 <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileSelect(event)">
@@ -715,21 +700,16 @@
                 <div id="ocrResult" class="ocr-result hidden">
                     <div>Detected Amount:</div>
                     <div class="ocr-amount" id="detectedAmount">$0.00</div>
-                    <small>✅ Auto-saving in 2 seconds...</small>
+                    <small>Adjust below if needed</small>
                 </div>
 
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <div>Reading your tip sheet...</div>
+                    <div>Reading receipt...</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="tipDate">Date</label>
-                    <input type="date" id="tipDate">
-                </div>
-
-                <div class="form-group">
-                    <label for="tipAmount">Total Credit Card Tips ($)</label>
+                    <label for="tipAmount">Tip Amount ($)</label>
                     <input type="number" id="tipAmount" step="0.01" min="0" placeholder="0.00" inputmode="decimal">
                 </div>
 
@@ -744,10 +724,10 @@
 
                 <div class="form-group">
                     <label for="notes">Notes (optional)</label>
-                    <textarea id="notes" placeholder="Busy night, good tables, etc..."></textarea>
+                    <textarea id="notes" placeholder="Any additional details..."></textarea>
                 </div>
 
-                <button onclick="saveTip()" id="saveTipBtn">💾 Save Tonight's Tips</button>
+                <button onclick="saveTip()" id="saveTipBtn">💾 Save Tip</button>
             </div>
         </div>
 
@@ -766,7 +746,8 @@
         let videoStream = null;
         let chart = null;
 
-        // Motivational quotes
+        // Initialize
+        // Spiritual quotes
         const spiritualQuotes = [
             "The universe rewards those who show up ✨",
             "Your energy attracts your wealth 🌟",
@@ -775,10 +756,11 @@
             "Abundance flows to those who believe 🌊",
             "Your hustle is your prayer 🔥",
             "Trust the timing of your life ⏰",
-            "What you seek is seeking you 🦋"
+            "What you seek is seeking you 🦋",
+            "Death and rebirth - every shift is transformation 💀🌹",
+            "Your energy is eternal, your abundance is infinite ✨"
         ];
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadTheme();
             loadStats();
@@ -786,10 +768,6 @@
             initChart();
             setupTabs();
             setDailyQuote();
-            
-            // Set today's date by default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tipDate').value = today;
         });
 
         function setDailyQuote() {
@@ -905,45 +883,9 @@
                 const preview = document.getElementById('preview');
                 preview.innerHTML = `<img src="${currentPhoto}" alt="Receipt">`;
                 
-                // Preprocess image for better OCR
-                preprocessImage(currentPhoto).then(processedImage => {
-                    processOCR(processedImage);
-                });
+                processOCR(currentPhoto);
             };
             reader.readAsDataURL(blob);
-        }
-
-        // Preprocess image for better OCR (increase contrast, sharpen)
-        async function preprocessImage(imageData) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    
-                    // Draw original image
-                    ctx.drawImage(img, 0, 0);
-                    
-                    // Get image data
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const data = imageData.data;
-                    
-                    // Increase contrast and convert to grayscale
-                    for (let i = 0; i < data.length; i += 4) {
-                        const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
-                        // High contrast threshold
-                        const enhanced = gray > 128 ? 255 : 0;
-                        data[i] = data[i + 1] = data[i + 2] = enhanced;
-                    }
-                    
-                    ctx.putImageData(imageData, 0, 0);
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.src = imageData;
-            });
         }
 
         // OCR
@@ -959,92 +901,24 @@
                 await worker.loadLanguage('eng');
                 await worker.initialize('eng');
                 
-                // Configure for handwritten text and numbers
-                await worker.setParameters({
-                    tessedit_char_whitelist: '0123456789./$', // Focus on numbers and currency
-                    tessedit_pageseg_mode: Tesseract.PSM.AUTO, // Auto page segmentation
-                });
-                
-                const { data: { text, lines } } = await worker.recognize(imageData);
+                const { data: { text } } = await worker.recognize(imageData);
                 await worker.terminate();
                 
-                console.log('OCR Text:', text); // Debug log
-                console.log('OCR Lines:', lines); // Debug lines
+                // Extract dollar amounts
+                const amounts = text.match(/\$?\d+\.?\d{0,2}/g);
                 
-                // Extract date if present (format: 1/29, 01/29, etc.)
-                const dateMatch = text.match(/(\d{1,2})[\s\/](\d{1,2})/);
-                if (dateMatch) {
-                    const month = parseInt(dateMatch[1]);
-                    const day = parseInt(dateMatch[2]);
-                    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
-                        const year = new Date().getFullYear();
-                        const detectedDate = new Date(year, month - 1, day);
-                        document.getElementById('tipDate').value = detectedDate.toISOString().split('T')[0];
-                        console.log('Detected date:', detectedDate);
-                    }
-                }
-                
-                // Look for tip-specific patterns
-                const tipPatterns = [
-                    /tip[:\s]*\$?(\d+\.?\d{0,2})/i,
-                    /gratuity[:\s]*\$?(\d+\.?\d{0,2})/i,
-                    /tips?[:\s]*\$?(\d+\.?\d{0,2})/i
-                ];
-                
-                let tipAmount = null;
-                
-                // Try to find explicit "tip" or "gratuity" line
-                for (const pattern of tipPatterns) {
-                    const match = text.match(pattern);
-                    if (match && match[1]) {
-                        tipAmount = parseFloat(match[1]);
-                        break;
-                    }
-                }
-                
-                // Fallback: extract all numbers (more aggressive for handwriting)
-                if (!tipAmount) {
-                    // Match any sequence of digits (possibly separated by spaces)
-                    const allMatches = text.match(/[\d\s]+/g);
+                if (amounts && amounts.length > 0) {
+                    // Find the most likely tip amount (usually the largest or last amount)
+                    const numbers = amounts.map(a => parseFloat(a.replace('$', '')));
+                    const tipAmount = Math.max(...numbers);
                     
-                    if (allMatches) {
-                        const numbers = allMatches
-                            .map(m => m.replace(/\s/g, '')) // Remove spaces
-                            .filter(m => m.length > 0)
-                            .map(m => parseFloat(m))
-                            .filter(n => !isNaN(n) && n > 0 && n < 10000); // More lenient range
-                        
-                        console.log('Detected numbers:', numbers);
-                        
-                        if (numbers.length > 0) {
-                            // For handwritten logs: look for the amount column (usually largest number if just tip amount)
-                            // Or use the first substantial number found
-                            const likelyTip = numbers.find(n => n >= 5 && n <= 500) || numbers[0];
-                            tipAmount = likelyTip;
-                        }
-                    }
-                }
-                
-                if (tipAmount && tipAmount > 0) {
                     document.getElementById('detectedAmount').textContent = `$${tipAmount.toFixed(2)}`;
                     document.getElementById('tipAmount').value = tipAmount.toFixed(2);
                     ocrResult.classList.remove('hidden');
                     ocrResult.classList.add('success');
-                    
-                    // Celebration animation for big tips
-                    if (tipAmount >= 100) {
-                        celebrateBigTip(tipAmount);
-                    }
-                    
-                    // Auto-save after 2 seconds if amount detected
-                    setTimeout(() => {
-                        if (document.getElementById('tipAmount').value === tipAmount.toFixed(2)) {
-                            saveTip();
-                        }
-                    }, 2000);
                 } else {
                     ocrResult.classList.remove('hidden', 'success');
-                    document.getElementById('detectedAmount').textContent = 'No amount found - please enter manually';
+                    document.getElementById('detectedAmount').textContent = 'No amount found';
                 }
             } catch (err) {
                 console.error('OCR Error:', err);
@@ -1092,11 +966,6 @@
             tips.unshift(tip);
             localStorage.setItem('tips', JSON.stringify(tips));
             
-            // Voice affirmation for big tips
-            if (amount >= 100) {
-                speakAffirmation(amount);
-            }
-            
             // Show success and reset
             showSuccess();
             resetForm();
@@ -1104,23 +973,6 @@
             updateChart();
         }
 
-        function speakAffirmation(amount) {
-            if ('speechSynthesis' in window) {
-                const affirmations = [
-                    `Amazing! ${amount} dollars! You are a magnet for abundance!`,
-                    `Yes! ${amount} dollars! Your energy is attracting prosperity!`,
-                    `Incredible! ${amount} dollars! The universe is responding to your vibration!`,
-                    `Wow! ${amount} dollars! You are worthy of all this abundance!`
-                ];
-                
-                const msg = new SpeechSynthesisUtterance(affirmations[Math.floor(Math.random() * affirmations.length)]);
-                msg.rate = 1.1;
-                msg.pitch = 1.2;
-                msg.volume = 0.8;
-                speechSynthesis.speak(msg);
-            }
-        }
-        
         function showSuccess() {
             const msg = document.createElement('div');
             msg.className = 'success-message';
@@ -1171,204 +1023,6 @@
             document.getElementById('weekTotal').textContent = `$${weekTotal.toFixed(2)}`;
             document.getElementById('monthTotal').textContent = `$${monthTotal.toFixed(2)}`;
             document.getElementById('dailyAvg').textContent = `$${dailyAvg.toFixed(2)}`;
-            
-            // Update manifestation message
-            updateManifestation(monthTotal, weekTotal);
-            
-            // Check milestones
-            checkMilestones(tips, monthTotal);
-        }
-        
-        function updateManifestation(monthTotal, weekTotal) {
-            const messages = [
-                { threshold: 5000, msg: "🌟 You're manifesting ABUNDANCE! Over $5K this month!" },
-                { threshold: 3000, msg: "💫 Your energy is MAGNETIC! $3K+ and climbing!" },
-                { threshold: 2000, msg: "✨ The universe is responding! $2K+ this month!" },
-                { threshold: 1000, msg: "🔮 Your vibration is HIGH! $1K+ this month!" },
-                { threshold: 500, msg: "🌙 Building momentum! Keep that energy flowing!" },
-                { threshold: 0, msg: "☀️ New beginnings, infinite possibilities!" }
-            ];
-            
-            const message = messages.find(m => monthTotal >= m.threshold);
-            document.getElementById('manifestation').textContent = message.msg;
-        }
-        
-        function checkMilestones(tips, monthTotal) {
-            const milestones = [
-                { id: 'first', check: () => tips.length >= 1, emoji: '🎉', text: 'First tip logged!' },
-                { id: 'week1', check: () => tips.length >= 7, emoji: '📅', text: 'One week tracked!' },
-                { id: 'hundred', check: () => tips.some(t => t.amount >= 100), emoji: '💯', text: 'First $100+ night!' },
-                { id: 'month1k', check: () => monthTotal >= 1000, emoji: '🎯', text: '$1,000 in a month!' },
-                { id: 'month2k', check: () => monthTotal >= 2000, emoji: '💎', text: '$2,000 in a month!' },
-                { id: 'month3k', check: () => monthTotal >= 3000, emoji: '👑', text: '$3,000 in a month!' },
-                { id: 'streak5', check: () => checkStreak(tips) >= 5, emoji: '🔥', text: '5-day streak!' },
-                { id: 'days30', check: () => tips.length >= 30, emoji: '🌙', text: '30 days tracked!' }
-            ];
-            
-            const unlocked = localStorage.getItem('milestones') ? JSON.parse(localStorage.getItem('milestones')) : [];
-            const newUnlocked = [];
-            
-            milestones.forEach(m => {
-                if (m.check() && !unlocked.includes(m.id)) {
-                    newUnlocked.push(m.id);
-                    unlocked.push(m.id);
-                    showMilestoneUnlock(m);
-                }
-            });
-            
-            if (newUnlocked.length > 0) {
-                localStorage.setItem('milestones', JSON.stringify(unlocked));
-            }
-            
-            // Display milestones
-            const list = document.getElementById('milestonesList');
-            list.innerHTML = milestones
-                .filter(m => unlocked.includes(m.id))
-                .map(m => `<div style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid var(--accent);">${m.emoji} ${m.text}</div>`)
-                .join('');
-        }
-        
-        function checkStreak(tips) {
-            if (tips.length === 0) return 0;
-            const sorted = tips.sort((a, b) => new Date(b.date) - new Date(a.date));
-            let streak = 1;
-            let lastDate = new Date(sorted[0].date);
-            
-            for (let i = 1; i < sorted.length; i++) {
-                const currentDate = new Date(sorted[i].date);
-                const dayDiff = Math.floor((lastDate - currentDate) / (1000 * 60 * 60 * 24));
-                if (dayDiff === 1) {
-                    streak++;
-                    lastDate = currentDate;
-                } else if (dayDiff > 1) {
-                    break;
-                }
-            }
-            return streak;
-        }
-        
-        function showMilestoneUnlock(milestone) {
-            const popup = document.createElement('div');
-            popup.innerHTML = `
-                <div style="font-size: 3rem; margin-bottom: 1rem;">${milestone.emoji}</div>
-                <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">Milestone Unlocked!</div>
-                <div style="font-size: 1.1rem;">${milestone.text}</div>
-            `;
-            popup.style.position = 'fixed';
-            popup.style.top = '50%';
-            popup.style.left = '50%';
-            popup.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            popup.style.backgroundColor = 'rgba(102, 126, 234, 0.95)';
-            popup.style.color = 'white';
-            popup.style.padding = '2rem';
-            popup.style.borderRadius = '20px';
-            popup.style.zIndex = '10000';
-            popup.style.textAlign = 'center';
-            popup.style.boxShadow = '0 0 40px rgba(102, 126, 234, 0.6)';
-            popup.style.transition = 'transform 0.3s ease-out';
-            document.body.appendChild(popup);
-            
-            setTimeout(() => {
-                popup.style.transform = 'translate(-50%, -50%) scale(1)';
-            }, 10);
-            
-            setTimeout(() => {
-                popup.style.transition = 'opacity 0.5s, transform 0.5s';
-                popup.style.opacity = '0';
-                popup.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                setTimeout(() => popup.remove(), 500);
-            }, 3000);
-        }
-
-        // Celebration for big tips
-        function celebrateBigTip(amount) {
-            // Create confetti effect
-            const confettiCount = 50;
-            for (let i = 0; i < confettiCount; i++) {
-                createConfetti();
-            }
-            
-            // Play success sound (if available)
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {}
-            
-            // Show celebration message
-            showCelebrationMessage(amount);
-        }
-        
-        function createConfetti() {
-            const confetti = document.createElement('div');
-            confetti.style.position = 'fixed';
-            confetti.style.width = '10px';
-            confetti.style.height = '10px';
-            confetti.style.backgroundColor = ['#ff00ff', '#00ffff', '#ffff00', '#ff0088'][Math.floor(Math.random() * 4)];
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.top = '-10px';
-            confetti.style.opacity = '1';
-            confetti.style.borderRadius = '50%';
-            confetti.style.pointerEvents = 'none';
-            confetti.style.zIndex = '9999';
-            document.body.appendChild(confetti);
-            
-            let pos = -10;
-            let opacity = 1;
-            const fall = setInterval(() => {
-                if (pos > window.innerHeight || opacity <= 0) {
-                    clearInterval(fall);
-                    confetti.remove();
-                } else {
-                    pos += 5;
-                    opacity -= 0.01;
-                    confetti.style.top = pos + 'px';
-                    confetti.style.opacity = opacity;
-                    confetti.style.left = (parseFloat(confetti.style.left) + (Math.random() - 0.5) * 2) + '%';
-                }
-            }, 30);
-        }
-        
-        function showCelebrationMessage(amount) {
-            const messages = [
-                `🔥 $${amount}?! You're on FIRE!`,
-                `💰 THAT'S what I'm talking about! $${amount}!`,
-                `✨ The universe is BLESSING you! $${amount}!`,
-                `🚀 You just leveled UP! $${amount}!`,
-                `💎 Diamond energy! $${amount}!`
-            ];
-            
-            const msg = messages[Math.floor(Math.random() * messages.length)];
-            const celebration = document.createElement('div');
-            celebration.textContent = msg;
-            celebration.style.position = 'fixed';
-            celebration.style.top = '50%';
-            celebration.style.left = '50%';
-            celebration.style.transform = 'translate(-50%, -50%)';
-            celebration.style.backgroundColor = 'rgba(255, 0, 255, 0.95)';
-            celebration.style.color = 'white';
-            celebration.style.padding = '2rem';
-            celebration.style.borderRadius = '20px';
-            celebration.style.fontSize = '1.5rem';
-            celebration.style.fontWeight = 'bold';
-            celebration.style.zIndex = '10000';
-            celebration.style.textAlign = 'center';
-            celebration.style.boxShadow = '0 0 30px rgba(255, 0, 255, 0.5)';
-            document.body.appendChild(celebration);
-            
-            setTimeout(() => {
-                celebration.style.transition = 'opacity 0.5s';
-                celebration.style.opacity = '0';
-                setTimeout(() => celebration.remove(), 500);
-            }, 2000);
         }
 
         // Chart
