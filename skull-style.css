@@ -1,0 +1,76 @@
+/* PSYCHEDELIC SKULL AESTHETIC */
+
+:root {
+    --skull-black: #0a0a0a;
+    --skull-purple: #b24cf7;
+    --skull-pink: #ff00ff;
+    --skull-cyan: #00ffff;
+    --skull-yellow: #ffff00;
+    --skull-red: #ff0088;
+    --skull-green: #00ff88;
+}
+
+body {
+    background: #0a0a0a;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(178, 76, 247, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 60%);
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Holographic text effect */
+h1, .stat-value {
+    background: linear-gradient(45deg, 
+        #ff00ff 0%, 
+        #00ffff 25%, 
+        #ffff00 50%, 
+        #ff00ff 75%, 
+        #00ffff 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: holographic 3s ease infinite;
+}
+
+@keyframes holographic {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Rose decoration */
+.stat-card::before {
+    content: '🌹';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 2rem;
+    opacity: 0.3;
+    filter: hue-rotate(280deg);
+}
+
+/* Glowing borders */
+.stat-card, button, input, textarea {
+    border: 2px solid rgba(255, 0, 255, 0.3);
+    box-shadow: 
+        0 0 10px rgba(255, 0, 255, 0.3),
+        0 0 20px rgba(0, 255, 255, 0.2),
+        inset 0 0 10px rgba(255, 255, 0, 0.1);
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+/* Skull accent */
+header h1::after {
+    content: '💀';
+    display: inline-block;
+    margin-left: 0.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
