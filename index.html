@@ -624,7 +624,7 @@
         <header>
             <h1>💯 Babe's Tip Tracker 💰</h1>
             <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0.25rem 0 0 0; font-style: italic;">"You attract what you are, not what you want" — Dr. Wayne Dyer</p>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌅</button>
         </header>
 
         <div class="tabs">
@@ -766,7 +766,7 @@
         function loadTheme() {
             const theme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
-            document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌅' : '🌙';
         }
 
         document.getElementById('themeToggle').addEventListener('click', () => {
@@ -774,7 +774,7 @@
             const next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
-            document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeToggle').textContent = next === 'dark' ? '🌅' : '🌙';
             if (chart) {
                 chart.options.scales.y.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
                 chart.options.scales.x.ticks.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
