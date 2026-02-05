@@ -154,27 +154,34 @@
         }
 
         [data-theme="dark"] .stat-card {
-            background: rgba(10, 10, 10, 0.85);
-            border: 2px solid rgba(255, 0, 255, 0.4);
+            background: rgba(0, 20, 10, 0.9);
+            border: 4px solid rgba(0, 255, 136, 0.6);
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(255, 0, 255, 0.3), 
-                0 0 40px rgba(0, 255, 255, 0.2),
-                inset 0 0 20px rgba(255, 0, 255, 0.05);
+                0 8px 32px rgba(0, 0, 0, 0.7),
+                0 0 30px rgba(0, 255, 136, 0.4), 
+                0 0 60px rgba(0, 255, 136, 0.2),
+                inset 0 0 30px rgba(0, 255, 136, 0.1);
             backdrop-filter: blur(20px);
-            animation: glow 3s ease-in-out infinite;
+            animation: moneyGlow 3s ease-in-out infinite;
         }
-
-        @keyframes glow {
+        
+        @keyframes moneyGlow {
             0%, 100% { 
-                box-shadow: 0 0 20px rgba(255, 0, 255, 0.1), 
-                           0 0 40px rgba(0, 255, 255, 0.05);
+                box-shadow: 
+                    0 8px 32px rgba(0, 0, 0, 0.7),
+                    0 0 30px rgba(0, 255, 136, 0.4), 
+                    0 0 60px rgba(0, 255, 136, 0.2),
+                    inset 0 0 30px rgba(0, 255, 136, 0.1);
             }
             50% { 
-                box-shadow: 0 0 30px rgba(255, 0, 255, 0.2), 
-                           0 0 60px rgba(0, 255, 255, 0.1);
+                box-shadow: 
+                    0 8px 32px rgba(0, 0, 0, 0.7),
+                    0 0 40px rgba(0, 255, 136, 0.6), 
+                    0 0 80px rgba(0, 255, 136, 0.3),
+                    inset 0 0 40px rgba(0, 255, 136, 0.15);
             }
         }
+
         }
 
         .stat-label {
@@ -187,6 +194,15 @@
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--accent);
+        }
+        
+        [data-theme="dark"] .stat-value {
+            color: #00ff88;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 136, 0.8),
+                0 0 20px rgba(0, 255, 136, 0.4);
+            font-weight: 900;
+            letter-spacing: 0.05em;
         }
 
         .chart-container {
@@ -552,6 +568,13 @@
             color: var(--accent);
             border-bottom-color: var(--accent);
         }
+        
+        [data-theme="dark"] .tab[data-tab="dashboard"].active {
+            color: #00ff88;
+            border-bottom-color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            font-weight: 900;
+        }
 
         .tab-content {
             display: none;
@@ -599,7 +622,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>💀🌹 Tip Tracker 🌹💀</h1>
+            <h1>💀💰 Tip Tracker 💰💀</h1>
             <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0.25rem 0 0 0; font-style: italic;">"The universe rewards those who show up" ✨</p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
         </header>
@@ -642,13 +665,13 @@
         <!-- Add Tip Tab -->
         <div class="tab-content" id="add">
             <div class="add-tip-section">
-                <div class="section-title">💀 Log Tonight's Energy 🌹</div>
+                <div class="section-title">💀 Log Tonight's Energy 💰</div>
                 <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
                     📝 Capture your abundance ✨
                 </p>
 
                 <div class="camera-preview" id="preview">
-                    <div class="placeholder-icon">📸🌹</div>
+                    <div class="placeholder-icon">📸💰</div>
                 </div>
 
                 <div class="btn-group">
